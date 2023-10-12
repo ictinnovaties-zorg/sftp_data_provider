@@ -1,0 +1,14 @@
+{
+  "build": { "dockerfile": "docker/Dockerfile" },
+  "forwardPorts": [5000],
+  "postStartCommand": "nohup bash -c 'jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root --NotebookApp.token=jupdevtoken &'",
+  "runArgs": [
+    "--gpus",
+    "all"
+  ],
+  "extensions": [
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "ms-toolsai.jupyter"
+  ]
+}
