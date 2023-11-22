@@ -2,6 +2,8 @@ nohup.out
 .env*
 local_getters.py
 sftp_docs/.obsidian
+test.ipynb
+*egg-info*
 
 # Prevent sensitive data from being committed
 *.csv

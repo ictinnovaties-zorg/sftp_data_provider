@@ -12,7 +12,7 @@ This file provides a set of functions that can load code from an SFTP server
 into a Python module like structure. For example, if you have a source file that 
 contains the function a(), after loading the module like this:
 
-    module = get_vicodin_module("source_file_with_function_a.py")
+    module = get_sftp_module("source_file_with_function_a.py")
     module.a()
 
 you can call the function a() using module.a(). 
@@ -47,12 +47,12 @@ def make_module(fname):
     -------
         A list(-like) object that contains the functions provided by the module
     '''
-    spec = importlib.util.spec_from_file_location("load_vicodin_data", fname)
+    spec = importlib.util.spec_from_file_location("load_sftp_data", fname)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
-def get_vicodin_module(fname, local_file=None):
+def get_sftp_module(fname, local_file=None):
     '''Load a module from the SFTP server. 
     
        Note that the configuration of the SFTP is read from a configuration file (.env), 

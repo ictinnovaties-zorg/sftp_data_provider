@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sftp_data_provider"
+version = "0.5"
+authors = [
+  { name="Paul Hiemstra", email="p.h.hiemstra@windesheim.nl" },
+]
+description = "A simple package to load data from an SFTP server into a notebook"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies=["pandas", "paramiko", "msoffcrypto-tool", "python-dotenv"]
+
+[project.urls]
+Homepage = "https://github.com/ictinnovaties-zorg/sftp_data_provider"
+Issues = "https://github.com/ictinnovaties-zorg/sftp_data_provider/issues"

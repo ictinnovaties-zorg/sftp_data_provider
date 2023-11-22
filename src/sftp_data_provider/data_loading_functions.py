@@ -11,7 +11,7 @@ import pathlib
 
 '''
 This file provides a set of functions that can load data from an SFTP server. The core of the 
-system is the `get_vicodin_data` function, which establishes a connection to the SFTP server, 
+system is the `get_sftp_data` function, which establishes a connection to the SFTP server, 
 loads the data into a BytesIO stream and then calls a loader function to load the data into a
 pandas dataframe.
 
@@ -39,7 +39,7 @@ PASSWORD = os.getenv("SFTP_PASSWORD")
 if HOSTNAME == None or USERNAME == None or PASSWORD == None:
     raise ValueError("Could not find the configuration of the SFTP server. You probably forgot to put the required .env file in your projects main folder. ")
 
-def get_vicodin_data(fname, loader_function, silent_fail=False):
+def get_sftp_data(fname, loader_function, silent_fail=False):
     '''Get a file from the server and load it using the loader_function. Returns a pandas dataframe
 
     This is a worker function that is used as a basis to write the actual functions
@@ -97,10 +97,6 @@ def decrypt_excel_bytes(bytes_io, password):
 
 ### This is where the actual work is done ###
 
-# Load any locally available getters if they exist
-if pathlib.Path("local_getters.py").exists():
-    from local_getters import *
-
 ### TEST FUNCTIONS ###
-get_test_file = partial(get_vicodin_data, 'scripts/test.csv', loader_function=pd.read_csv)
-get_non_existing_data = partial(get_vicodin_data, 'non_existing_file.xlsx', loader_function=pd.read_excel)
+get_test_file = partial(get_sftp_data, 'scripts/test.csv', loader_function=pd.read_csv)
+get_non_existing_data = partial(get_sftp_data, 'non_existing_file.xlsx', loader_function=pd.read_excel)
