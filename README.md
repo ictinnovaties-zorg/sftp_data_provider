@@ -9,7 +9,7 @@ In this readme file we provide a simple usage tutorial, for more details regardi
 # Installation
 You can install the package using:
 
-    TODO add here, probably `pip install git-repo-url`
+    pip install git+https://github.com/ictinnovaties-zorg/sftp_data_provider.git
 
 # Usage
 ### Directly loading data
