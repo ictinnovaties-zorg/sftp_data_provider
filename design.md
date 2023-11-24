@@ -75,7 +75,7 @@ These credentials need to be provided to the student by the researcher. But once
 
     get_sftp_data("data_file.xlsx", pd.read_excel)
 
-here you can see that the function requires two inputs: a file that is to be loaded from the SFTP server, and a load function that converts the contents of that file to a Pandas DataFrame. In this case the loader is quite simply the standard Pandas function to read an Excel file. 
+here you can see that the function requires two inputs: a file that is to be loaded from the SFTP server, and a loader function that converts the contents of that file to a Pandas DataFrame. In this case the loader is quite simply the standard Pandas function to read an Excel file. 
 
 #### Getting the data with an anonymous loader
 In the example above, the data loader does not involve any sensitive information. However, the following example does:
@@ -111,3 +111,39 @@ This triggers the following workflow:
 This first gets the data loading code from the server, and then executes it locally get actually get the data from the SFTP server. This hides any and all details regarding how the data is actually read (AC2). 
 
 ### Common maintanance tasks
+#### Setup the SFTP server
+TODO: add details here
+
+#### Add new student group
+- Create SFTP account
+- Create a `. env` file for the students
+- Send the credentials to the user, i.e. the `.env`
+
+TODO: check if this needs more work
+
+#### Add new dataset to the server
+If you have the data ready on your own machine, copy the data to the homedrive of your account on the machine:
+
+    local> scp data.xlsx machine:~
+    local> ssh machine
+
+We switched to the SFTP server, and copy the data to the proper directory in the `sftp` setup:
+
+    machine> sudo cp ~/data.csv /var/sftp/account_name_students
+
+Note the use of sudo here because your normal user does not have write priviliges in this location. Next we need to change the ownership of the files to ensure that students can download it:
+
+    machine> sudo chown root:students /var/sftp/account_name_students/data.xlsx
+
+So the owner is `root`, but it is part of the `students` group. This ensure the students can access the data. If you do not need a more intricate loader function, you are now done. 
+
+If you want to add a custom loader function and hide the contents from the students, you also need to add the loader script in the same location as the data file. 
+
+Assuming we have the script ready in `load_data.py`:
+
+    local> scp load_data.py machine:~
+    local> ssh machine
+    machine> sudo cp ~/load_data.py /var/sftp/account_name_students
+    machine> sudo chown root:students /var/sftp/account_name_students/load_data.py
+
+Notice that this workflow is very comparable to the one we used for the data. 
