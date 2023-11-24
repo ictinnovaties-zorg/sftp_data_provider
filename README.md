@@ -62,12 +62,6 @@ In this case the end-user only sees this piece of code, all other details are hi
 ### sftp_docs
 This provides a ZettelKasten based version of the design in `design.md`. This is in the form of a Obsidian vault. You need to install Obsidian to read this version of the documentation. 
 
-### module_loading_functions.py
-The code needed to be able to read the data processing code from the SFTP server. See the design for more details. 
-
-### data_loading_functions.py
-This files contains the code needed to actually read the data from the SFTP server. See the design for more details. 
-
 ### tests/
 Provides testing for the tool. This is quite barebones at the moment. TODO: expand these tests!
 
