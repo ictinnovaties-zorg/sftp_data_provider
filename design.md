@@ -110,18 +110,69 @@ This triggers the following workflow:
 
 This first gets the data loading code from the server, and then executes it locally get actually get the data from the SFTP server. This hides any and all details regarding how the data is actually read (AC2). 
 
-### Common maintanance tasks
-#### Setup the SFTP server
+# Common maintanance tasks
+## Setup the SFTP server
 TODO: add details here
 
-#### Add new student group
-- Create SFTP account
-- Create a `. env` file for the students
-- Send the credentials to the user, i.e. the `.env`
+## Add new student group
+To add a new group of students to the SFTP server we need to take the following steps: *Note that these steps assume a modern linux installation based on Debian. The steps are mostly derived from [this tutorial](https://en.linuxportal.info/leirasok/fajlrendszer/hogyan-hozhatunk-letre-sftp-felhasznalot-shell-hozzaferes-nelkul-linux-rendszerunkon)*:
 
-TODO: check if this needs more work
+1. Create a new user on the server:
 
-#### Add new dataset to the server
+       machine> sudo useradd piet -s /sbin/nologin -M -G students
+       machine> sudo passwd piet
+
+    - `-s /sbin/nologin`, ensures the user cannot access a shell on the host machine. This provides better security. 
+    - `-M`, omit creating a homedirectory for the user. There is no need for this as they will online use the SFTP directories/ 
+    - `-G students` add the user to the students group. This activates a number of relevant settings on the server, and is required. 
+
+2. Add the account to the list of users that are allowed to remotely connect to the server. 
+
+       machine > sudo vim /etc/ssh/sshd_config
+
+    - In this file search for:
+        
+          AllowUsers xx yy piet
+
+      And ensure that the user is add to this list. Restart the sshd service after this:
+
+          machine> sudo systemctl restart sshd.service
+
+3. Create a new directory on the SFTP server for this group. 
+
+        machine> sudo mkdir -p /var/sftp/piet 
+
+    Note that the directory name following `/var/sftp/` should be exactly identical to the linux username. This is used to couple this directory to the SFTP account. 
+
+    Ensure the directory has the correct owner:group to allow access:
+
+        machine> sudo chown root:students /var/sftp/piet
+
+4. (optional) write a custom loader function if there are details that need to be hidden for the students. 
+
+5. Send a `.env` file with the credentials to the students, this needs to be put into the main directory of their project. For our `piet` user, this looks like this:
+
+        SFTP_HOSTNAME='123.44.55.66.77'
+        SFTP_USERNAME='piet'
+        SFTP_PASSWORD='piet_password'
+
+    For testing you can add the following very simple csv file to the account directory on the SFTP server as `test.csv`:
+
+        kolom_a, kolom_b
+        1,2
+        3,4
+        5,6
+
+    The following code should read this file:
+
+        from sftp_data_provider import get_sftp_data
+        import pandas as pd
+
+        get_sftp_data("test.csv", pd.read_csv)
+
+    ![alt text](pics/table_output.png)
+
+## Add new dataset to the server
 If you have the data ready on your own machine, copy the data to the homedrive of your account on the machine:
 
     local> scp data.xlsx machine:~
