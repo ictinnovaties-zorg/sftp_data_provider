@@ -32,7 +32,6 @@ disadvantage that the functions below cannot really be run outside of the contex
 # Load the environment variables that configure the SFTP server
 load_dotenv()
 HOSTNAME = os.getenv("SFTP_HOSTNAME")
-print(HOSTNAME)
 USERNAME = os.getenv("SFTP_USERNAME")
 PASSWORD = os.getenv("SFTP_PASSWORD")
 
@@ -65,7 +64,7 @@ def get_sftp_data(fname, loader_function, silent_fail=False):
     '''
     with paramiko.SSHClient() as ssh_client:
         ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh_client.connect(hostname=HOSTNAME.strip(), username=USERNAME, password=PASSWORD, allow_agent=False)
+        ssh_client.connect(hostname=HOSTNAME, username=USERNAME, password=PASSWORD, allow_agent=False)
         sftp_client = ssh_client.open_sftp()
         with ssh_client.open_sftp() as sftp_client:
             try:

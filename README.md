@@ -57,10 +57,18 @@ Here we do not use `pd.read_excel` as the loader function, but write our own cus
 
 In this case the end-user only sees this piece of code, all other details are hidden on the SFTP server. 
 
+# Common errors and possible solutions
+
+## `NoValidConnectionsError` from `get_sftp_data`
+This means the code cannot connect to the server you specified in `.env`. Check that the ip address is correct, it could be the service provider has changed the ip address. Another option is that port 22 is not open on the server. Check with your service provider that this is the case. 
+
+## `gaierror` from `get_sftp_data`
+The actual error message can change for this error: `[Errno -2] Name or service not known` or `[Errno 11001] getaddrinfo failed` are examples. These mean your hostname is not the correct ip-address. Update your `.env` file with the correct ip-address. 
+
 # Other files
 
 ### sftp_docs
-This provides a ZettelKasten based version of the design in `design.md`. This is in the form of a Obsidian vault. You need to install Obsidian to read this version of the documentation. 
+This provides a ZettelKasten based version of the design in `design.md`. This is in the form of a Obsidian vault. You need to install Obsidian to read this version of the documentation. Note this is not up-to-date with the most recent version of the documentation. 
 
 ### tests/
 Provides testing for the tool. This is quite barebones at the moment. TODO: expand these tests!
