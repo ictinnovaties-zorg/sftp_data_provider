@@ -76,18 +76,19 @@ def get_sftp_module(fname, local_file=None):
     if local_file is not None:
         module = make_module(local_file)
     else:
-        # TODO: Update to using GUID based filename?
-        tmp_path = Path('blurpbla.py')   # I do not use NamedTemporaryFile here, because it leads to errors under windows 10. See documentation at the start of this function
-        assert tmp_path.exists() == False, "The temporary file blurpbla.py already exists. This should not happen. "
-        with tmp_path.open('wb') as tmp_file:
-            with paramiko.SSHClient() as ssh_client:
-                ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh_client.connect(hostname=HOSTNAME, username=USERNAME, password=PASSWORD, allow_agent=False)
-                sftp_client = ssh_client.open_sftp()
-                with ssh_client.open_sftp() as sftp_client:
-                    with sftp_client.open(fname) as f:
-                        tmp_file.write(f.read())
-        module = make_module(tmp_path)
-        tmp_path.unlink() # remove the temporary file
+        try:  # Note I use the try only for the `finally` clause.
+            # TODO: Update to using GUID based filename?
+            tmp_path = Path('blurpbla.py')   # I do not use NamedTemporaryFile here, because it leads to errors under windows 10. See documentation at the start of this function
+            with tmp_path.open('wb') as tmp_file:
+                with paramiko.SSHClient() as ssh_client:
+                    ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                    ssh_client.connect(hostname=HOSTNAME, username=USERNAME, password=PASSWORD, allow_agent=False)
+                    sftp_client = ssh_client.open_sftp()
+                    with ssh_client.open_sftp() as sftp_client:
+                        with sftp_client.open(fname) as f:
+                            tmp_file.write(f.read())
+            module = make_module(tmp_path)
+        finally: # include finally to ensure the temp file is removed in all cases
+            tmp_path.unlink() # remove the temporary file
 
     return module
